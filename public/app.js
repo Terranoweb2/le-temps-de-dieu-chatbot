@@ -276,22 +276,112 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Ajouter les gestionnaires d'événements pour les boutons
     document.addEventListener('DOMContentLoaded', function() {
-        const summarizeBtn = document.querySelector('[data-action="summarize"]');
-        const createImageBtn = document.querySelector('[data-action="create_image"]');
-        const helpWritingBtn = document.querySelector('[data-action="writing_help"]');
-        const moreOptionsBtn = document.querySelector('[data-action="more_options"]');
+        const chatInput = document.querySelector('.chat-input');
+        const sendButton = document.querySelector('.send-button');
+        const summarizeButton = document.querySelector('.summarize-btn');
+        const chatContainer = document.querySelector('.chat-container');
 
-        if (summarizeBtn) summarizeBtn.addEventListener('click', summarizeText);
-        if (createImageBtn) createImageBtn.addEventListener('click', createImage);
-        if (helpWritingBtn) helpWritingBtn.addEventListener('click', helpWriting);
-        if (moreOptionsBtn) {
-            moreOptionsBtn.addEventListener('click', function() {
-                const moreOptions = document.querySelector('.more-options');
-                if (moreOptions) {
-                    moreOptions.classList.toggle('show');
-                }
-            });
+        // Fonction pour ajuster automatiquement la hauteur du textarea
+        function adjustTextareaHeight() {
+            chatInput.style.height = 'auto';
+            chatInput.style.height = (chatInput.scrollHeight) + 'px';
         }
+
+        // Gérer l'envoi du message
+        async function handleSend() {
+            const message = chatInput.value.trim();
+            if (!message) return;
+
+            // Ajouter le message de l'utilisateur
+            addMessage(message, 'user');
+            
+            // Réinitialiser l'input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            try {
+                const response = await fetch('/.netlify/functions/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message, action: 'chat' })
+                });
+
+                const data = await response.json();
+                addMessage(data.response, 'assistant');
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Désolé, une erreur est survenue.', 'assistant');
+            }
+        }
+
+        // Gérer le résumé de texte
+        async function handleSummarize() {
+            const text = chatInput.value.trim();
+            if (!text) {
+                alert('Veuillez entrer un texte à résumer');
+                return;
+            }
+
+            // Ajouter le message de l'utilisateur
+            addMessage(`Résumé demandé pour : ${text}`, 'user');
+            
+            // Réinitialiser l'input
+            chatInput.value = '';
+            chatInput.style.height = 'auto';
+
+            try {
+                const response = await fetch('/.netlify/functions/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: text,
+                        action: 'summarize'
+                    })
+                });
+
+                const data = await response.json();
+                addMessage(data.response, 'assistant');
+            } catch (error) {
+                console.error('Error:', error);
+                addMessage('Désolé, je ne peux pas résumer ce texte pour le moment.', 'assistant');
+            }
+        }
+
+        // Event listeners
+        chatInput.addEventListener('input', adjustTextareaHeight);
+        
+        sendButton.addEventListener('click', handleSend);
+        
+        summarizeButton.addEventListener('click', handleSummarize);
+        
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSend();
+            }
+        });
+
+        // Fonction pour ajouter un message au chat
+        function addMessage(content, sender, isHTML = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (isHTML) {
+                messageDiv.innerHTML = content;
+            } else {
+                messageDiv.textContent = content;
+            }
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Message de bienvenue
+        addMessage('Comment puis-je vous aider à en apprendre davantage sur le christianisme et l\'islam ?', 'assistant');
     });
 
     // Fonction utilitaire pour ajouter un message au chat

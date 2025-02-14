@@ -260,124 +260,120 @@ textarea::placeholder {
 
 .action-buttons {
     display: flex;
-    gap: 8px;
-    margin-top: 8px;
-    flex-wrap: wrap;
+    gap: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
 }
 
 .action-button {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: rgba(64,65,79,0.9);
     border: none;
-    border-radius: 20px;
-    background-color: #f0f0f0;
-    color: #333;
+    color: #ececf1;
+    border-radius: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.2s;
-    font-size: 14px;
+    white-space: nowrap;
+    transition: all 0.2s;
 }
 
 .action-button:hover {
-    background-color: #e0e0e0;
+    background-color: rgba(255,255,255,0.1);
 }
 
 .action-button svg {
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
 }
 
-.more-options-menu {
-    position: absolute;
-    bottom: 100%;
-    right: 0;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    display: none;
-    z-index: 1000;
-}
-
-.more-options-menu.show {
-    display: block;
-}
-
-.more-options-content {
-    padding: 8px;
-}
-
-.more-option {
+.action-button.summarize-btn {
     display: flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
     padding: 8px 16px;
+    background-color: #f0f2f5;
     border: none;
-    background: none;
+    border-radius: 20px;
+    color: #1a1a1a;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-    color: #333;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
 }
 
-.more-option:hover {
-    background-color: #f5f5f5;
+.action-button.summarize-btn:hover {
+    background-color: #e4e6e9;
 }
 
-.more-option svg {
+.action-button.summarize-btn svg {
     width: 20px;
     height: 20px;
-    fill: currentColor;
+}
+
+.action-button.summarize-btn span {
+    white-space: nowrap;
 }
 
 .chat-input-container {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     padding: 16px;
     background: white;
-    border-top: 1px solid #eee;
+    border-top: 1px solid #e4e6e9;
 }
 
-.chat-input-wrapper {
+.input-wrapper {
     position: relative;
+    width: 100%;
 }
 
 .chat-input {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    resize: none;
+    border: 1px solid #e4e6e9;
+    border-radius: 20px;
     font-size: 14px;
     line-height: 1.5;
-    max-height: 150px;
-    overflow-y: auto;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.chat-input:focus {
+    border-color: #0084ff;
+}
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .send-button {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    background: #007bff;
-    border: none;
-    border-radius: 50%;
-    width: 36px;
-    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #0084ff;
+    border: none;
+    border-radius: 50%;
+    color: white;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease;
 }
 
 .send-button:hover {
-    background: #0056b3;
+    background-color: #0073e6;
 }
 
 .send-button svg {
-    width: 20px;
-    height: 20px;
-    fill: white;
+    width: 24px;
+    height: 24px;
 }
 
 .message-tag {

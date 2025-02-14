@@ -42,54 +42,20 @@
                 </div>
                 <div class="chat-container" id="chat-container"></div>
                 <div class="chat-input-container">
-                    <div class="chat-input-wrapper">
-                        <textarea class="chat-input" placeholder="Posez votre question sur le christianisme ou l'islam..."></textarea>
-                        <div class="action-buttons">
-                            <button class="action-button" data-action="summarize">
-                                <svg viewBox="0 0 24 24" class="action-icon">
-                                    <path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zM4 15h16v-2H4v2zM4 5v2h16V5H4z"/>
-                                </svg>
-                                <span>Résumé un texte</span>
-                            </button>
-                            <button class="action-button" data-action="create_image">
-                                <svg viewBox="0 0 24 24" class="action-icon">
-                                    <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                                </svg>
-                                <span>Créer une image</span>
-                            </button>
-                            <button class="action-button" data-action="writing_help">
-                                <svg viewBox="0 0 24 24" class="action-icon">
-                                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                                </svg>
-                                <span>M'aider à écrire</span>
-                            </button>
-                            <button class="action-button" data-action="more_options">
-                                <svg viewBox="0 0 24 24" class="action-icon">
-                                    <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-                                </svg>
-                                <span>Plus</span>
-                            </button>
-                        </div>
+                    <div class="input-wrapper">
+                        <textarea class="chat-input" placeholder="Posez votre question sur le christianisme ou l'islam..." rows="1"></textarea>
                     </div>
-                    <button class="send-button">
-                        <svg viewBox="0 0 24 24">
-                            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="more-options-menu">
-                    <div class="more-options-content">
-                        <button class="more-option" data-action="share">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                    <div class="action-buttons">
+                        <button class="action-button summarize-btn" data-action="summarize">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M14,17H7V15H14V17M17,13H7V11H17V13M17,9H7V7H17V9M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" />
                             </svg>
-                            <span>Partager</span>
+                            <span>Résumer le texte</span>
                         </button>
-                        <button class="more-option" data-action="feedback">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>
+                        <button class="send-button">
+                            <svg viewBox="0 0 24 24" width="24" height="24">
+                                <path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
                             </svg>
-                            <span>Donner un avis</span>
                         </button>
                     </div>
                 </div>
