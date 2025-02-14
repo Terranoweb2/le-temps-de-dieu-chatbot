@@ -43,14 +43,81 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sendButton.addEventListener('click', sendMessage);
 
-    function createMessageElement(content, isUser = false) {
-        const messageContainer = document.createElement('div');
-        messageContainer.className = `message-container ${isUser ? 'user-message' : 'bot-message'}`;
+    async function sendMessage() {
+        const message = userInput.value.trim();
+
+        if (!message) return;
+
+        // Add user message
+        const userMessageElement = createMessageElement(message, true);
+        chatContainer.appendChild(userMessageElement);
+
+        // Afficher l'indicateur de chargement
+        const loadingElement = document.createElement('div');
+        loadingElement.className = 'message bot-message loading';
+        loadingElement.innerHTML = '<div class="loading-dots"><div></div><div></div><div></div></div>';
+        chatContainer.appendChild(loadingElement);
+
+        // Vider l'input et ajuster sa taille
+        userInput.value = '';
+        userInput.style.height = 'auto';
+
+        // Faire défiler jusqu'en bas
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: message,
+                    userId: userId
+                })
+            });
+
+            const data = await response.json();
+
+            // Supprimer l'indicateur de chargement
+            loadingElement.remove();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Une erreur est survenue');
+            }
+
+            // Créer et ajouter la réponse du bot
+            const botMessageElement = createMessageElement(data.choices[0].message.content);
+            chatContainer.appendChild(botMessageElement);
+
+        } catch (error) {
+            // Supprimer l'indicateur de chargement
+            loadingElement.remove();
+
+            // Afficher le message d'erreur
+            const errorMessage = error.message || "Désolé, une erreur est survenue. Veuillez réessayer.";
+            const errorElement = createMessageElement(errorMessage, false, true);
+            chatContainer.appendChild(errorElement);
+
+            console.error('Error:', error);
+        }
+
+        // Faire défiler jusqu'en bas
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    function createMessageElement(content, isUser = false, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message-container ${isUser ? 'user-message' : 'bot-message'}`;
         
+        if (isError) {
+            messageDiv.classList.add('error-message');
+        }
+
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
         avatar.textContent = isUser ? 'U' : 'TD';
-        
+
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
         
@@ -62,14 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         const messageText = document.createElement('div');
-        messageText.textContent = content;
-        
+        if (isError) {
+            messageText.innerHTML = `<div class="error-icon">⚠️</div>${content}`;
+        } else {
+            messageText.textContent = content;
+        }
+
         messageContent.appendChild(messageHeader);
         messageContent.appendChild(messageText);
-        
-        messageContainer.appendChild(avatar);
-        messageContainer.appendChild(messageContent);
-        
+
+        messageDiv.appendChild(avatar);
+        messageDiv.appendChild(messageContent);
+
         if (!isUser) {
             const reactions = document.createElement('div');
             reactions.className = 'message-reactions';
@@ -98,52 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     </svg>
                 </button>
             `;
-            messageContainer.appendChild(reactions);
+            messageDiv.appendChild(reactions);
         }
         
-        return messageContainer;
-    }
-
-    async function sendMessage() {
-        const message = userInput.value.trim();
-        if (!message) return;
-
-        // Add user message
-        chatContainer.appendChild(createMessageElement(message, true));
-        
-        // Clear input
-        userInput.value = '';
-        userInput.style.height = 'auto';
-        
-        // Scroll to bottom
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        try {
-            const response = await fetch('/.netlify/functions/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    question: message,
-                    userId: userId
-                })
-            });
-
-            const data = await response.json();
-            
-            if (data.choices && data.choices[0]) {
-                const botMessage = data.choices[0].message.content;
-                chatContainer.appendChild(createMessageElement(botMessage));
-            } else {
-                throw new Error('Format de réponse invalide');
-            }
-        } catch (error) {
-            chatContainer.appendChild(createMessageElement('Désolé, une erreur est survenue. Veuillez réessayer.'));
-        }
-
-        // Scroll to bottom again
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+        return messageDiv;
     }
 
     // Copy to clipboard function
