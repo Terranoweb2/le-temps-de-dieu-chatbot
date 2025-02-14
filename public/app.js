@@ -43,81 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     sendButton.addEventListener('click', sendMessage);
 
-    async function sendMessage() {
-        const message = userInput.value.trim();
-
-        if (!message) return;
-
-        // Add user message
-        const userMessageElement = createMessageElement(message, true);
-        chatContainer.appendChild(userMessageElement);
-
-        // Afficher l'indicateur de chargement
-        const loadingElement = document.createElement('div');
-        loadingElement.className = 'message bot-message loading';
-        loadingElement.innerHTML = '<div class="loading-dots"><div></div><div></div><div></div></div>';
-        chatContainer.appendChild(loadingElement);
-
-        // Vider l'input et ajuster sa taille
-        userInput.value = '';
-        userInput.style.height = 'auto';
-
-        // Faire défiler jusqu'en bas
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        try {
-            const response = await fetch('/.netlify/functions/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    question: message,
-                    userId: userId
-                })
-            });
-
-            const data = await response.json();
-
-            // Supprimer l'indicateur de chargement
-            loadingElement.remove();
-
-            if (!response.ok) {
-                throw new Error(data.error || 'Une erreur est survenue');
-            }
-
-            // Créer et ajouter la réponse du bot
-            const botMessageElement = createMessageElement(data.choices[0].message.content);
-            chatContainer.appendChild(botMessageElement);
-
-        } catch (error) {
-            // Supprimer l'indicateur de chargement
-            loadingElement.remove();
-
-            // Afficher le message d'erreur
-            const errorMessage = error.message || "Désolé, une erreur est survenue. Veuillez réessayer.";
-            const errorElement = createMessageElement(errorMessage, false, true);
-            chatContainer.appendChild(errorElement);
-
-            console.error('Error:', error);
-        }
-
-        // Faire défiler jusqu'en bas
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-    }
-
-    function createMessageElement(content, isUser = false, isError = false) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message-container ${isUser ? 'user-message' : 'bot-message'}`;
+    function createMessageElement(content, isUser = false) {
+        const messageContainer = document.createElement('div');
+        messageContainer.className = `message-container ${isUser ? 'user-message' : 'bot-message'}`;
         
-        if (isError) {
-            messageDiv.classList.add('error-message');
-        }
-
         const avatar = document.createElement('div');
         avatar.className = 'avatar';
         avatar.textContent = isUser ? 'U' : 'TD';
-
+        
         const messageContent = document.createElement('div');
         messageContent.className = 'message-content';
         
@@ -129,18 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         const messageText = document.createElement('div');
-        if (isError) {
-            messageText.innerHTML = `<div class="error-icon">⚠️</div>${content}`;
-        } else {
-            messageText.textContent = content;
-        }
-
+        messageText.textContent = content;
+        
         messageContent.appendChild(messageHeader);
         messageContent.appendChild(messageText);
-
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(messageContent);
-
+        
+        messageContainer.appendChild(avatar);
+        messageContainer.appendChild(messageContent);
+        
         if (!isUser) {
             const reactions = document.createElement('div');
             reactions.className = 'message-reactions';
@@ -169,10 +98,52 @@ document.addEventListener('DOMContentLoaded', () => {
                     </svg>
                 </button>
             `;
-            messageDiv.appendChild(reactions);
+            messageContainer.appendChild(reactions);
         }
         
-        return messageDiv;
+        return messageContainer;
+    }
+
+    async function sendMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        // Add user message
+        chatContainer.appendChild(createMessageElement(message, true));
+        
+        // Clear input
+        userInput.value = '';
+        userInput.style.height = 'auto';
+        
+        // Scroll to bottom
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        try {
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    question: message,
+                    userId: userId
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.choices && data.choices[0]) {
+                const botMessage = data.choices[0].message.content;
+                chatContainer.appendChild(createMessageElement(botMessage));
+            } else {
+                throw new Error('Format de réponse invalide');
+            }
+        } catch (error) {
+            chatContainer.appendChild(createMessageElement('Désolé, une erreur est survenue. Veuillez réessayer.'));
+        }
+
+        // Scroll to bottom again
+        chatContainer.scrollTop = chatContainer.scrollHeight;
     }
 
     // Copy to clipboard function
@@ -219,81 +190,124 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Fonctions pour les boutons d'action
-    async function handleSummarize() {
-        const chatInput = document.querySelector('.chat-input textarea');
-        const currentText = chatInput.value;
-        
-        if (!currentText.trim()) {
+    // Fonctions pour les actions supplémentaires
+    async function summarizeText() {
+        const userInput = document.querySelector('.chat-input').value;
+        if (!userInput) {
             alert('Veuillez entrer un texte à résumer');
             return;
         }
 
-        const prompt = `Résumez ce texte de manière concise : ${currentText}`;
-        chatInput.value = prompt;
-        await sendMessage();
+        try {
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: `Résume ce texte de manière concise : ${userInput}`,
+                    action: 'summarize'
+                })
+            });
+
+            const data = await response.json();
+            addMessage(data.response, 'assistant');
+        } catch (error) {
+            console.error('Erreur:', error);
+            addMessage('Désolé, je ne peux pas résumer ce texte pour le moment.', 'assistant');
+        }
     }
 
-    async function handleCreateImage() {
-        const chatInput = document.querySelector('.chat-input textarea');
-        const currentText = chatInput.value;
-        
-        if (!currentText.trim()) {
-            alert('Veuillez entrer une description de l\'image souhaitée');
+    async function createImage() {
+        const userInput = document.querySelector('.chat-input').value;
+        if (!userInput) {
+            alert('Veuillez entrer une description pour l\'image');
             return;
         }
 
-        const prompt = `Générez une image qui représente : ${currentText}`;
-        chatInput.value = prompt;
-        await sendMessage();
+        try {
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: userInput,
+                    action: 'create_image'
+                })
+            });
+
+            const data = await response.json();
+            // Ajouter l'image générée au chat
+            const imageMessage = `<img src="${data.image_url}" alt="Generated Image" style="max-width: 100%; border-radius: 8px;">`;
+            addMessage(imageMessage, 'assistant', true);
+        } catch (error) {
+            console.error('Erreur:', error);
+            addMessage('Désolé, je ne peux pas créer cette image pour le moment.', 'assistant');
+        }
     }
 
-    async function handleWritingAssist() {
-        const chatInput = document.querySelector('.chat-input textarea');
-        const currentText = chatInput.value;
-        
-        if (!currentText.trim()) {
-            alert('Veuillez entrer votre texte ou sujet');
+    async function helpWriting() {
+        const userInput = document.querySelector('.chat-input').value;
+        if (!userInput) {
+            alert('Veuillez entrer votre demande d\'aide à l\'écriture');
             return;
         }
 
-        const prompt = `Aidez-moi à améliorer ou développer ce texte : ${currentText}`;
-        chatInput.value = prompt;
-        await sendMessage();
+        try {
+            const response = await fetch('/.netlify/functions/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: `Aide-moi à écrire : ${userInput}`,
+                    action: 'writing_help'
+                })
+            });
+
+            const data = await response.json();
+            addMessage(data.response, 'assistant');
+        } catch (error) {
+            console.error('Erreur:', error);
+            addMessage('Désolé, je ne peux pas vous aider avec l\'écriture pour le moment.', 'assistant');
+        }
     }
 
-    function handleMoreOptions() {
-        const moreOptions = [
-            'Analyser un texte biblique',
-            'Comparer christianisme et islam',
-            'Expliquer un concept religieux',
-            'Trouver des versets pertinents',
-            'Obtenir des conseils spirituels'
-        ];
+    // Ajouter les gestionnaires d'événements pour les boutons
+    document.addEventListener('DOMContentLoaded', function() {
+        const summarizeBtn = document.querySelector('[data-action="summarize"]');
+        const createImageBtn = document.querySelector('[data-action="create_image"]');
+        const helpWritingBtn = document.querySelector('[data-action="writing_help"]');
+        const moreOptionsBtn = document.querySelector('[data-action="more_options"]');
 
-        const optionsHtml = moreOptions.map(option => 
-            `<button class="more-option-btn" onclick="selectMoreOption('${option}')">${option}</button>`
-        ).join('');
+        if (summarizeBtn) summarizeBtn.addEventListener('click', summarizeText);
+        if (createImageBtn) createImageBtn.addEventListener('click', createImage);
+        if (helpWritingBtn) helpWritingBtn.addEventListener('click', helpWriting);
+        if (moreOptionsBtn) {
+            moreOptionsBtn.addEventListener('click', function() {
+                const moreOptions = document.querySelector('.more-options');
+                if (moreOptions) {
+                    moreOptions.classList.toggle('show');
+                }
+            });
+        }
+    });
 
-        const modal = document.createElement('div');
-        modal.className = 'more-options-modal';
-        modal.innerHTML = `
-            <div class="more-options-content">
-                <h3>Plus d'options</h3>
-                <div class="options-grid">
-                    ${optionsHtml}
-                </div>
-                <button class="close-modal" onclick="this.parentElement.parentElement.remove()">Fermer</button>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-    }
-
-    function selectMoreOption(option) {
-        const chatInput = document.querySelector('.chat-input textarea');
-        chatInput.value = `Je voudrais ${option.toLowerCase()}`;
-        document.querySelector('.more-options-modal').remove();
+    // Fonction utilitaire pour ajouter un message au chat
+    function addMessage(content, sender, isHTML = false) {
+        const chatMessages = document.querySelector('.chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${sender}-message`;
+        
+        if (isHTML) {
+            messageDiv.innerHTML = content;
+        } else {
+            messageDiv.textContent = content;
+        }
+        
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     // Initialize with welcome message
