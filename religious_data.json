@@ -1,0 +1,51 @@
+{
+    "christianisme": {
+        "versets": [
+            {
+                "livre": "Jean",
+                "chapitre": 3,
+                "verset": 16,
+                "texte": "Car Dieu a tant aimé le monde qu'il a donné son Fils unique, afin que quiconque croit en lui ne périsse point, mais qu'il ait la vie éternelle."
+            },
+            {
+                "livre": "Jean",
+                "chapitre": 1,
+                "verset": 1,
+                "texte": "Au commencement était la Parole, et la Parole était avec Dieu, et la Parole était Dieu."
+            }
+        ],
+        "conciles": [
+            {
+                "nom": "Nicée",
+                "année": 325,
+                "déclaration": "Nous croyons en un seul Dieu, le Père tout-puissant, créateur de toutes choses visibles et invisibles."
+            }
+        ],
+        "théologiens": {
+            "Augustin": "La Cité de Dieu",
+            "Thomas d'Aquin": "Somme théologique"
+        }
+    },
+    "islam": {
+        "coran": [
+            {
+                "sourate": 2,
+                "verset": 255,
+                "texte": "Allah ! Point de divinité à part Lui, le Vivant, Celui qui subsiste par lui-même. Ni somnolence ni sommeil ne Le saisissent."
+            },
+            {
+                "sourate": 112,
+                "versets": "1-4",
+                "texte": "Dis : Il est Allah, Unique. Allah, Le Seul à être imploré pour ce que nous désirons. Il n'a jamais engendré, n'a pas été engendré non plus. Et nul n'est égal à Lui."
+            }
+        ],
+        "hadiths": {
+            "Sahih al-Bukhari": [
+                "Les actions ne valent que par leurs intentions. Il sera tenu compte à chaque homme de ses intentions."
+            ],
+            "Sahih Muslim": [
+                "Nul d'entre vous n'est véritablement croyant tant qu'il n'aime pas pour son frère ce qu'il aime pour lui-même."
+            ]
+        }
+    }
+}
