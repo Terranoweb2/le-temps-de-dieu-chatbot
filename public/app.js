@@ -190,6 +190,83 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // Fonctions pour les boutons d'action
+    async function handleSummarize() {
+        const chatInput = document.querySelector('.chat-input textarea');
+        const currentText = chatInput.value;
+        
+        if (!currentText.trim()) {
+            alert('Veuillez entrer un texte à résumer');
+            return;
+        }
+
+        const prompt = `Résumez ce texte de manière concise : ${currentText}`;
+        chatInput.value = prompt;
+        await sendMessage();
+    }
+
+    async function handleCreateImage() {
+        const chatInput = document.querySelector('.chat-input textarea');
+        const currentText = chatInput.value;
+        
+        if (!currentText.trim()) {
+            alert('Veuillez entrer une description de l\'image souhaitée');
+            return;
+        }
+
+        const prompt = `Générez une image qui représente : ${currentText}`;
+        chatInput.value = prompt;
+        await sendMessage();
+    }
+
+    async function handleWritingAssist() {
+        const chatInput = document.querySelector('.chat-input textarea');
+        const currentText = chatInput.value;
+        
+        if (!currentText.trim()) {
+            alert('Veuillez entrer votre texte ou sujet');
+            return;
+        }
+
+        const prompt = `Aidez-moi à améliorer ou développer ce texte : ${currentText}`;
+        chatInput.value = prompt;
+        await sendMessage();
+    }
+
+    function handleMoreOptions() {
+        const moreOptions = [
+            'Analyser un texte biblique',
+            'Comparer christianisme et islam',
+            'Expliquer un concept religieux',
+            'Trouver des versets pertinents',
+            'Obtenir des conseils spirituels'
+        ];
+
+        const optionsHtml = moreOptions.map(option => 
+            `<button class="more-option-btn" onclick="selectMoreOption('${option}')">${option}</button>`
+        ).join('');
+
+        const modal = document.createElement('div');
+        modal.className = 'more-options-modal';
+        modal.innerHTML = `
+            <div class="more-options-content">
+                <h3>Plus d'options</h3>
+                <div class="options-grid">
+                    ${optionsHtml}
+                </div>
+                <button class="close-modal" onclick="this.parentElement.parentElement.remove()">Fermer</button>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+    }
+
+    function selectMoreOption(option) {
+        const chatInput = document.querySelector('.chat-input textarea');
+        chatInput.value = `Je voudrais ${option.toLowerCase()}`;
+        document.querySelector('.more-options-modal').remove();
+    }
+
     // Initialize with welcome message
     chatContainer.appendChild(createMessageElement('Comment puis-je vous aider à en apprendre davantage sur le christianisme et l\'islam ?'));
 });
