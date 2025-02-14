@@ -1,12 +1,19 @@
 [build]
-  command = "pip install -r requirements.txt"
   publish = "public"
-  functions = "netlify/functions"
+  command = "npm install"
 
 [dev]
   framework = "#custom"
   command = "python app.py"
   targetPort = 5000
+
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 [[redirects]]
   from = "/api/*"
