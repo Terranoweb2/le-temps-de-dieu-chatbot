@@ -2,108 +2,111 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Le Temps de Dieu - Assistant IA pour le Christianisme et l'Islam</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Temps de Dieu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <!-- Sidebar -->
-        <nav class="sidebar">
+        <aside class="sidebar">
             <div class="sidebar-header">
-                <img src="https://res.cloudinary.com/dxy0fiahv/image/upload/v1732541188/logo_ydiaeh.png" alt="Logo" class="sidebar-logo">
-                <h1 class="sidebar-title d-none d-md-block">Le Temps de Dieu</h1>
+                <img src="https://res.cloudinary.com/dxy0fiahv/image/upload/v1732541188/logo_ydiaeh.png" alt="Logo" class="logo">
+                <h1>Le Temps de Dieu</h1>
+                <p class="subtitle">En ligne</p>
             </div>
             
-            <div class="sidebar-nav">
-                <button class="nav-button active">
-                    <i class="bi bi-chat-dots-fill"></i>
-                    <span class="d-none d-md-inline">Chat</span>
+            <nav class="sidebar-nav">
+                <button class="nav-button active" data-section="chat">
+                    <i class="bi bi-chat-dots"></i>
+                    Chat
                 </button>
-                <button class="nav-button">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <span class="d-none d-md-inline">À propos</span>
+                <button class="nav-button" data-section="about">
+                    <i class="bi bi-info-circle"></i>
+                    À propos
                 </button>
-                <button class="nav-button">
-                    <i class="bi bi-gear-fill"></i>
-                    <span class="d-none d-md-inline">Paramètres</span>
+                <button class="nav-button" data-section="settings">
+                    <i class="bi bi-gear"></i>
+                    Paramètres
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button class="share-button">
+                    <i class="bi bi-share"></i>
+                    Partager
                 </button>
             </div>
-        </nav>
+        </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <header class="chat-header">
-                <div class="current-chat">
-                    <img src="https://res.cloudinary.com/dxy0fiahv/image/upload/v1732541188/logo_ydiaeh.png" alt="Logo" class="chat-logo d-md-none">
-                    <div class="chat-info">
-                        <h2>Le Temps de Dieu</h2>
-                        <p class="status">En ligne</p>
-                    </div>
+            <!-- Chat Section -->
+            <section id="chat-section" class="content-section active">
+                <div class="chat-header">
+                    <h2>Bienvenue sur Le Temps de Dieu</h2>
+                    <p>Votre assistant pour découvrir et comprendre les religions</p>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-share">
-                        <i class="bi bi-share"></i>
-                        <span class="d-none d-md-inline">Partager</span>
-                    </button>
+
+                <div id="chat-container" class="chat-messages">
+                    <!-- Messages will be added here dynamically -->
                 </div>
-            </header>
 
-            <div class="chat-container" id="chat-container">
-                <!-- Les messages seront ajoutés ici dynamiquement -->
-            </div>
-
-            <footer class="chat-footer">
-                <div class="chat-controls">
-                    <form id="message-form" class="message-input-container">
-                        <input type="text" id="message-input" placeholder="Posez votre question sur le christianisme ou l'islam..." required>
-                        <button type="submit">
-                            <i class="bi bi-send-fill"></i>
-                        </button>
-                    </form>
-                    <div class="controls">
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="image-toggle">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <span>Générer des images</span>
+                <form id="message-form" class="message-input-container">
+                    <div class="input-group">
+                        <textarea id="message-input" class="form-control" 
+                            placeholder="Posez votre question sur le christianisme ou l'islam..." 
+                            rows="1"></textarea>
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i>
+                            </button>
                         </div>
                     </div>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-button" title="Résumer un texte">
-                        <i class="bi bi-file-text"></i>
-                        <span class="d-none d-md-inline">Résumer</span>
-                    </button>
-                    <button class="action-button" title="Créer une image">
-                        <i class="bi bi-image"></i>
-                        <span class="d-none d-md-inline">Image</span>
-                    </button>
-                    <button class="action-button" title="Mode écriture">
-                        <i class="bi bi-pencil"></i>
-                        <span class="d-none d-md-inline">Écrire</span>
-                    </button>
-                    <div class="dropdown">
-                        <button class="action-button" data-bs-toggle="dropdown">
-                            <i class="bi bi-three-dots"></i>
-                            <span class="d-none d-md-inline">Plus</span>
+                    <div class="message-actions">
+                        <button type="button" class="action-button">
+                            <i class="bi bi-text-paragraph"></i>
+                            Résumer
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-translate"></i> Traduire</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-book"></i> Citations</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-question-circle"></i> Aide</a></li>
-                        </ul>
+                        <button type="button" class="action-button">
+                            <i class="bi bi-image"></i>
+                            Image
+                        </button>
+                        <button type="button" class="action-button">
+                            <i class="bi bi-pencil"></i>
+                            Écrire
+                        </button>
+                        <button type="button" class="action-button">
+                            <i class="bi bi-three-dots"></i>
+                            Plus
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- About Section -->
+            <section id="about-section" class="content-section hidden">
+                <h2>À propos</h2>
+                <p>Le Temps de Dieu est un assistant virtuel conçu pour vous aider à explorer et comprendre le christianisme et l'islam. Notre objectif est de favoriser le dialogue interreligieux et la compréhension mutuelle.</p>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="content-section hidden">
+                <h2>Paramètres</h2>
+                <div class="settings-group">
+                    <h3>Apparence</h3>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
+                        <label class="form-check-label" for="darkModeToggle">Mode sombre</label>
                     </div>
                 </div>
-            </footer>
+            </section>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
