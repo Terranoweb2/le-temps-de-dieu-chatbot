@@ -106,6 +106,79 @@ const messageHandler = {
     }
 };
 
+// Mobile Menu Management
+const menuToggle = document.querySelector('.menu-toggle');
+const mobileActionsToggle = document.querySelector('.mobile-actions-toggle');
+const sidebar = document.querySelector('.sidebar');
+const mobileActionsMenu = document.querySelector('.mobile-actions-menu');
+
+// Create overlay
+const overlay = document.createElement('div');
+overlay.className = 'mobile-overlay';
+document.body.appendChild(overlay);
+
+// Toggle Sidebar
+menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('show');
+    overlay.classList.toggle('show');
+    mobileActionsMenu.classList.remove('show');
+});
+
+// Toggle Mobile Actions Menu
+mobileActionsToggle.addEventListener('click', () => {
+    mobileActionsMenu.classList.toggle('show');
+    overlay.classList.toggle('show');
+    sidebar.classList.remove('show');
+});
+
+// Close menus when clicking overlay
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('show');
+    mobileActionsMenu.classList.remove('show');
+    overlay.classList.remove('show');
+});
+
+// Close menus on navigation
+document.querySelectorAll('.nav-button').forEach(button => {
+    button.addEventListener('click', () => {
+        sidebar.classList.remove('show');
+        mobileActionsMenu.classList.remove('show');
+        overlay.classList.remove('show');
+    });
+});
+
+// Handle swipe gestures
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.addEventListener('touchstart', e => {
+    touchStartX = e.changedTouches[0].screenX;
+});
+
+document.addEventListener('touchend', e => {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+});
+
+function handleSwipe() {
+    const SWIPE_THRESHOLD = 50;
+    const swipeDistance = touchEndX - touchStartX;
+
+    if (Math.abs(swipeDistance) < SWIPE_THRESHOLD) return;
+
+    if (swipeDistance > 0) {
+        // Swipe right - open sidebar
+        if (touchStartX < 30) {
+            sidebar.classList.add('show');
+            overlay.classList.add('show');
+        }
+    } else {
+        // Swipe left - close sidebar
+        sidebar.classList.remove('show');
+        overlay.classList.remove('show');
+    }
+}
+
 // Gestionnaire des événements
 async function handleSubmit(e) {
     e.preventDefault();
